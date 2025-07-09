@@ -9,37 +9,20 @@
  */
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-      ArrayList<TreeNode> path1 = new ArrayList<>();
-      ArrayList<TreeNode> path2 = new ArrayList<>();
+        if(root== null) return null;
 
-      //call for root to n1 distnce and root to n2 distance
-      if(!findPath(root, p, path1) || !findPath(root, q, path2)){
-        return null;
-      }
+        if(root==p || root==q) return root;//one root then ancestor is root
 
-      //compare not equal to
-      int i =0;
-      for(; i<path1.size() && i<path2.size(); i++){
-        if(path1.get(i)!=path2.get(i)){
-            break;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+        if(left==null){ //left LCA is null then return right LCA
+            return right;
         }
-      }
-      return path1.get(i-1);
-    }
-    private static boolean findPath(TreeNode root, TreeNode n, ArrayList<TreeNode> path){
-        if(root==null) return false;
-
-        path.add(root);
-
-        //chack root node is child node
-        if(root==n) return true;
-
-        //left and right both return true
-        if(findPath(root.left, n , path) || findPath(root.right, n, path)){
-            return true;
+        if(right == null){//righ LCA is null then return left LCA
+            return left;
         }
-        //if left right not return true then return false
-        path.remove(path.size()-1);
-        return false;
+        //if both null then return root
+        return root;
     }
 }
