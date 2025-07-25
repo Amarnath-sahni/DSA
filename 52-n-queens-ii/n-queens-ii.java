@@ -2,19 +2,20 @@ class Solution {
     // Function to check if placing a Queen is safe
     public static boolean isSafe(char[][] board, int row, int col){
         // Check same column upwards
-        for (int i = row - 1; i >= 0; i--) {
-            if (board[i][col] == 'Q') return false;
-        }
+       for(int i=row-1; i>=0; i--){ //no need to move colum
+        if(board[i][col]=='Q') return false;
+       }
 
         // Check upper left diagonal
-        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
-            if (board[i][j] == 'Q') return false;
+        for(int i=row-1, j=col-1; i>=0 && j>=0; i--, j--){
+            if(board[i][j]=='Q') return false;
         }
 
         // ✅ Correct: check upper **right** diagonal
-        for (int i = row - 1, j = col + 1; i >= 0 && j < board.length; i--, j++) {
-            if (board[i][j] == 'Q') return false;
+        for(int i=row-1, j=col+1; i>=0 && j<board.length; i--, j++){
+            if(board[i][j]=='Q') return false;
         }
+        
 
         return true;
     }
@@ -42,6 +43,7 @@ class Solution {
 
     // Helper to print board (optional)
     public static void printqueen(char[][] board) {
+
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 System.out.print(board[i][j] + " ");
