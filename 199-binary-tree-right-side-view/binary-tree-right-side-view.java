@@ -15,33 +15,32 @@
  */
 class Solution {
     public List<Integer> rightSideView(TreeNode root) {
-          Queue<TreeNode> q = new LinkedList<>();
+        Queue<TreeNode> q = new LinkedList<>();
         List<Integer> ans = new ArrayList<>();
 
-        if (root == null) return ans;
+        if(root==null) return ans;
 
         q.add(root);
-        while (!q.isEmpty()) {
-            int levelSize = q.size();
+        while(!q.isEmpty()){
+            int last = q.size();
             TreeNode rightView = null;
 
-            for (int i = 0; i < levelSize; i++) {
-                TreeNode curr = q.poll();
+            for(int i=0; i<last; i++){
+             TreeNode curr = q.poll();
 
-                if (curr != null) {
-                    rightView = curr; // last node at this level will be the rightmost one
+             if(curr!=null){
+                 rightView = curr; //overRide the value until they come last val 
 
-                    // FIXED HERE: use curr instead of root
-                    if (curr.left != null) q.add(curr.left);
-                    if (curr.right != null) q.add(curr.right);
-                }
+             if(curr.left!=null) q.add(curr.left); //I'm maked mistake here adding root that inifinitily adding children
+             if(curr.right!=null) q.add(curr.right);
             }
-
-            if (rightView != null) {
+             }
+            
+            //if rightmostview have val then add the ans
+            if(rightView!=null){
                 ans.add(rightView.val);
             }
         }
-
         return ans;
     }
 }
