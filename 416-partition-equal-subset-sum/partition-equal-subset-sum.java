@@ -10,21 +10,22 @@ class Solution {
         if(sum % 2!=0) return false;
         int target = sum/2; 
 
-        Boolean dp[][] = new Boolean[n][target+1]; //memoization
-        return solve(nums, 0, target, dp);
-    }
+        boolean dp[][] = new boolean[n+1][target+1]; //memoization
+      //  for(int i=0; i<target; i++) dp[0][i] = true;
+        for(int i=0; i<=n; i++) dp[i][0] = true;
 
-    private static boolean solve(int nums[], int i, int target, Boolean[][] dp){
-       if(target == 0) return true;
+        for(int i=1; i<=n; i++){
+             int val = nums[i-1];
 
-       if(i>= nums.length  || target < 0) return false;
+            for(int j=1; j<=target; j++){
+                dp[i][j] = dp[i-1][j]; //not include
 
-        if (dp[i][target] != null) return dp[i][target];
+                if(j >= val){
+                    dp[i][j] = dp[i][j] || dp[i-1][j-val];
+                }
+            }
+        }
 
-       boolean include = solve(nums, i+1, target-nums[i], dp);
-       boolean exclude = solve(nums, i+1, target, dp);
-
-       dp[i][target] = include || exclude;
-       return dp[i][target];
+        return dp[n][target];
     }
 }
