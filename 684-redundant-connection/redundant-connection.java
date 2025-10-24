@@ -1,44 +1,54 @@
 class Solution {
+    int[] par;
+    int[] rank;
 
     public int[] findRedundantConnection(int[][] edges) {
-       int n = edges.length; // number of edges
-        ArrayList<Integer>[] graph = new ArrayList[n + 1]; // graph
+        int n = edges.length;
 
-        // initialize graph
-        for (int i = 0; i <= n; i++) {
-            graph[i] = new ArrayList<>();
+        par = new int[n+1];
+        rank = new int[n+1];
+
+        for(int i=1; i<=n; i++){
+            par[i] = i;
+            rank[i] =0;
         }
 
-        // try to add each edge one by one
-        for (int[] e : edges) {
-            int u = e[0];
-            int v = e[1];
 
-            boolean[] visited = new boolean[n + 1];
-            // check if path already exists between u and v
-            if (dfs(graph, u, v, visited)) {
-                return e; // this edge makes cycle
-            }
+      for(int[] e : edges){
+        int u = e[0];
+        int v = e[1];
 
-            // if no cycle then add edge to graph
-            graph[u].add(v);
-            graph[v].add(u);
+        if(find(u) == find(v)){
+            return e;
+        }else{
+             union(u, v);
         }
+      }
 
-        return new int[0];
+      return new int[0];
     }
 
-     public boolean dfs(ArrayList<Integer>[] graph, int src, int target, boolean[] visited) {
-        if (src == target) return true; // path found
-        visited[src] = true;
-
-        for (int neigh : graph[src]) {
-            if (!visited[neigh]) {
-                if (dfs(graph, neigh, target, visited)) {
-                    return true;
-                }
-            }
+    public int find(int x) {
+        if (par[x] != x) {
+            par[x] = find(par[x]); // path compression
         }
-        return false; // no path found
+        return par[x];
+    }
+
+    // Union by rank
+    public void union(int a, int b) {
+        int pa = find(a);
+        int pb = find(b);
+
+        if (pa == pb) return; // already connected
+
+        if (rank[pa] < rank[pb]) {
+            par[pa] = pb;
+        } else if (rank[pb] < rank[pa]) {
+            par[pb] = pa;
+        } else {
+            par[pb] = pa;
+            rank[pa]++;
+        }
     }
 }
