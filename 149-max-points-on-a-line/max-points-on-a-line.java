@@ -1,37 +1,48 @@
 class Solution {
     public int maxPoints(int[][] points) {
         int n = points.length;
-        if(n==1) return n;
-        int ans =0;
+        if(n <= 2) return n;
+        int ans = 0;
 
-        for(int i=0; i<n; i++){
-            for(int j=i+1; j<n; j++){
-                int count = 2;
-                int x1 = points[i][0];
-                int y1 = points[i][1];
-                int x2 = points[j][0];
-                int y2 = points[j][1];
-                 int dx = x2-x1;
-                int dy = y2-y1;
-
-
-                for(int k=0; k<n; k++){
-                    if(i!=k && j!=k){
-                      int x3 = points[k][0];
-                    int y3 = points[k][1];
-                    int dy1 = (y3-y2);
-                    int dx1 = (x3-x2);
-
-                    if(dy*dx1 == dx*dy1){
-                        count++;
-                    }
-                    
-                    }  
-                }
-                ans = Math.max(ans, count);
+        for(int i =0; i<n; i++){
+             Map<String, Integer>map = new HashMap<>();
+             int locMax =0;
+             int overlap =0;
+           for(int j=i+1; j<n; j++){
+            int dx = points[i][0]-points[j][0];
+            int dy = points[i][1]-points[j][1];
+        
+            if(dy==0 && dx == 0){
+                overlap++;
+                continue;
             }
-        }
+
+            int gcd = gcd(dx, dy);
+            dx /=gcd;
+            dy /=gcd;
+
+            if(dx < 0 ){
+                dx = -dx;
+                dy = -dy;
+            }
+
+            String slop = dy + "/" + dx;
+          
+           map.put(slop, map.getOrDefault(slop, 0) + 1);
+
+
+           locMax = Math.max(locMax, map.get(slop));
+
+          }
+
+          ans = Math.max(ans , locMax + overlap + 1);
+        } 
 
         return ans;
+    }
+
+    public static int gcd(int a, int b){
+        if(b==0) return a;
+        return gcd(b, a%b);
     }
 }
