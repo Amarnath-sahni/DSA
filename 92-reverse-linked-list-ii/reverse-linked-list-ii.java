@@ -24,17 +24,17 @@ class Solution {
 
         // Step 2: Reverse sublist from left to right
         ListNode curr = leftPrev.next;
-
-        for (int i = 0; i < right - left; i++) {
-            ListNode next = curr.next;
-
-            // remove next
-            curr.next = next.next;
-
-            // insert next after leftPrev
-            next.next = leftPrev.next;
-            leftPrev.next = next;
+        ListNode sublistHead = curr;
+        ListNode PreNode = null;
+        for(int i=0; i<right-left+1; i++){
+            ListNode nextNode = curr.next;
+            curr.next = PreNode;
+            PreNode = curr;
+            curr = nextNode;
         }
+
+        leftPrev.next = PreNode;
+        sublistHead.next = curr;
 
         return dummy.next;
     }
