@@ -3,17 +3,17 @@ class Solution {
         return square(0, x, x);
     }
     private static int square(int s, int e, int x){
-       if (s > e) return e; // end will be the integer part of sqrt
+       if(s > e) return e;
 
-        int mid = s + (e - s) / 2;
-        long square = (long) mid * mid;
+            int mid = s + (e-s)/2;
+            long squrt = (long)mid*mid;
 
-        if (square == x) {
-            return mid;
-        } else if (square < x) {
-            return square(mid + 1, e, x);
-        } else {
-            return square(s, mid - 1, x);
-        }
+            if(x == squrt){
+                return mid;
+            }else if(x > squrt){
+                return square(mid+1, e, x);
+            }else{
+                return square(s, mid-1, x);
+            }
     }
 }
