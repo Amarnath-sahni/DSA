@@ -1,38 +1,30 @@
 class Solution {
     public String longestPalindrome(String s) {
-        int n = s.length();
-        if (n < 2) return s;
+        int start =0; int end = 0;
 
-        boolean[][] dp = new boolean[n][n];
-        int start = 0, maxLen = 1;
+        for(int i=0; i<s.length(); i++){
 
-        // every single char is palindrome
-        for (int i = 0; i < n; i++) {
-            dp[i][i] = true;
-        }
+            //i is center and expand from here
+            int oddLen = spand(s, i, i);
+            int evenLen =spand(s, i, i+1);
 
-        // check 2-character substrings
-        for (int i = 0; i < n - 1; i++) {
-            if (s.charAt(i) == s.charAt(i + 1)) {
-                dp[i][i + 1] = true;
-                start = i;
-                maxLen = 2;
+            int len = Math.max(oddLen, evenLen);
+            
+            if(len > end - start){
+                start = i - (len-1)/2;
+                end = i + len/2;
             }
         }
 
-        // check substrings length >= 3
-        for (int len = 3; len <= n; len++) {
-            for (int i = 0; i <= n - len; i++) {
-                int j = i + len - 1; // ending index
-                if (s.charAt(i) == s.charAt(j) && dp[i + 1][j - 1]) {
-                    dp[i][j] = true;
-                    start = i;
-                    maxLen = len;
-                }
-            }
+        return s.substring(start, end+1); //according to subString property we adding +11 at end
+    }
+
+    private static int spand(String s , int left, int right){
+        while(left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)){
+            left--;
+            right++;
         }
 
-        return s.substring(start, start + maxLen);
-    
+        return right-left-1; // aba 3-(-1) -1 = 4-1 = 3;
     }
 }
