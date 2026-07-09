@@ -1,19 +1,22 @@
 class Solution {
     public int[] findErrorNums(int[] nums) {
-        int fre[] = new int[nums.length+1];
+        int f[] = new int[nums.length+1];
+        int ans[] = new int[2];
 
-        for(int num :nums){
-            fre[num]++;
+        for(int num :  nums){
+            f[num]++;
+        }
+       
+        for(int i=1; i<=nums.length; i++){
+           if(f[i] == 2){
+            ans[0] = i;
+           }
+
+           if(f[i] == 0){
+            ans[1] = i;
+           }
         }
 
-        int missing = -1;
-        int duplicate = -1;
-        
-        for(int i=1; i<nums.length+1; i++){
-            if(fre[i]==2) duplicate = i;
-            if(fre[i] == 0) missing = i;
-        }
-
-        return new int[]{duplicate, missing};
+        return ans;
     }
 }
