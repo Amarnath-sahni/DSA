@@ -1,75 +1,119 @@
 class LRUCache {
-       class Node {
-        int key, value;
-        Node prev, next;
+
+    class Node {
+        int key;
+        int value;
+        Node prev;
+        Node next;
+
         Node(int key, int value) {
             this.key = key;
             this.value = value;
         }
     }
 
+
     private int capacity;
-    private Map<Integer, Node> map;  // Key -> Node
-    private Node head, tail;         // Dummy head and tail
+    private HashMap<Integer, Node> map;
+
+    private Node head;
+    private Node tail;
+
 
     public LRUCache(int capacity) {
+
         this.capacity = capacity;
         this.map = new HashMap<>();
-        this.head = new Node(0, 0);
-        this.tail = new Node(0, 0);
+
+        // Dummy nodes
+        head = new Node(-1, -1);
+        tail = new Node(-1, -1);
+
         head.next = tail;
         tail.prev = head;
     }
 
-    // Remove a node from the linked list
-    private void remove(Node node) {
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
-    }
-
-    // Insert node right after head (most recently used position)
-    private void insert(Node node) {
-        node.next = head.next;
-        head.next.prev = node;
-        head.next = node;
-        node.prev = head;
-    }
 
     public int get(int key) {
-        if (map.containsKey(key)) {
-            Node node = map.get(key);
-            remove(node);    // move it to front (most recently used)
-            insert(node);
-            return node.value;
+
+        if(!map.containsKey(key)) {
+            return -1;
         }
-        return -1; // not found
+
+
+        Node node = map.get(key);
+
+
+        // Move to front because it is recently used
+        remove(node);
+        addFirst(node);
+
+
+        return node.value;
     }
+
 
     public void put(int key, int value) {
-        if (map.containsKey(key)) {
-            // Update existing node
+
+
+        // If key already exists
+        if(map.containsKey(key)) {
+
             Node node = map.get(key);
+
             node.value = value;
+
             remove(node);
-            insert(node);
-        } else {
-            if (map.size() == capacity) {
-                // Remove least recently used (LRU)
+            addFirst(node);
+
+        }
+        else {
+
+            Node node = new Node(key, value);
+
+            map.put(key, node);
+
+            addFirst(node);
+
+
+            // Capacity exceeded
+            if(map.size() > capacity) {
+
                 Node lru = tail.prev;
+
                 remove(lru);
+
                 map.remove(lru.key);
             }
-            Node newNode = new Node(key, value);
-            insert(newNode);
-            map.put(key, newNode);
         }
     }
 
-}
 
-/**
- * Your LRUCache object will be instantiated and called as such:
- * LRUCache obj = new LRUCache(capacity);
- * int param_1 = obj.get(key);
- * obj.put(key,value);
- */
+
+    // Add node after head
+    private void addFirst(Node node) {
+
+        Node nextNode = head.next;
+
+
+        head.next = node;
+        node.prev = head;
+
+
+        node.next = nextNode;
+        nextNode.prev = node;
+    }
+
+
+
+    // Remove node from list
+    private void remove(Node node) {
+
+        Node prevNode = node.prev;
+        Node nextNode = node.next;
+
+
+        prevNode.next = nextNode;
+        nextNode.prev = prevNode;
+    }
+}
