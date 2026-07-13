@@ -1,55 +1,68 @@
 class Solution {
-     static class Node{
-        int src;
-        int dest;
-        public Node(int src, int dest){
-            this.src=src;
-            this.dest = dest;
+   public boolean canFinish(int numCourses, int[][] prerequisites) {
+
+        // adjacency list
+        List<List<Integer>> graph = new ArrayList<>();
+
+        for(int i = 0; i < numCourses; i++) {
+            graph.add(new ArrayList<>());
         }
-    }
-    public static boolean Cycle_In_directed_Graph(ArrayList<Node>[] graph, int curr, boolean[] vis, boolean[] rec) {
-    vis[curr] = true;
-    rec[curr] = true;
 
-    for (int i = 0; i < graph[curr].size(); i++) {
-        Node e = graph[curr].get(i);
 
-        if (rec[e.dest]) {
-            return true; // cycle found
-        } else if (!vis[e.dest]) {
-            if (Cycle_In_directed_Graph(graph, e.dest, vis, rec)) {
-                return true;
+        // indegree array
+        int[] indegree = new int[numCourses];
+
+
+        // Build graph
+        for(int[] pre : prerequisites) {
+
+            int course = pre[0];
+            int prerequisite = pre[1];
+
+            // prerequisite -> course
+            graph.get(prerequisite).add(course);
+
+            // course has one more dependency
+            indegree[course]++;
+        }
+
+
+        // Queue for courses with no dependency
+        Queue<Integer> queue = new LinkedList<>();
+
+        for(int i = 0; i < numCourses; i++) {
+
+            if(indegree[i] == 0) {
+                queue.offer(i);
             }
         }
-    }
 
-    rec[curr] = false; // remove from recursion stack
-    return false;
-}
 
-    public boolean canFinish(int numCourses, int[][] prerequisites) {
-       // Step 1: Build graph
-    ArrayList<Node>[] graph = new ArrayList[numCourses];
-    for (int i = 0; i < numCourses; i++) {
-        graph[i] = new ArrayList<>();
-    }
-    for (int[] pre : prerequisites) {
-        int course = pre[0];
-        int prereq = pre[1];
-        graph[prereq].add(new Node(prereq, course));
-    }
+        int completedCourses = 0;
 
-    // Step 2: DFS cycle detection
-    boolean[] vis = new boolean[numCourses];
-    boolean[] rec = new boolean[numCourses];
 
-    for (int i = 0; i < numCourses; i++) {
-        if (!vis[i]) {
-            if (Cycle_In_directed_Graph(graph, i, vis, rec)) {
-                return false; // cycle detected
+        // BFS
+        while(!queue.isEmpty()) {
+
+            int current = queue.poll();
+
+            completedCourses++;
+
+
+            // remove dependency
+            for(int nextCourse : graph.get(current)) {
+
+                indegree[nextCourse]--;
+
+                // no dependency left
+                if(indegree[nextCourse] == 0) {
+                    queue.offer(nextCourse);
+                }
             }
         }
-    }
-    return true; // no cycles → can finish
+
+
+        // If all courses completed, no cycle
+        return completedCourses == numCourses;
     }
 }
