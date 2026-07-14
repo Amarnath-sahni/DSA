@@ -9,20 +9,34 @@
  */
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if(root== null) return null;
+         // Base case
+        if(root == null) {
+            return null;
+        }
 
-        if(root==p || root==q) return root;//one root then ancestor is root
 
+        // If current node is one of p or q
+        if(root == p || root == q) {
+            return root;
+        }
+
+
+        // Search left subtree
         TreeNode left = lowestCommonAncestor(root.left, p, q);
+
+
+        // Search right subtree
         TreeNode right = lowestCommonAncestor(root.right, p, q);
 
-        if(left==null){ //left LCA is null then return right LCA
-            return right;
+
+
+        // p and q found in different subtrees
+        if(left != null && right != null) {
+            return root;
         }
-        if(right == null){//righ LCA is null then return left LCA
-            return left;
-        }
-        //if both null then return root
-        return root;
+
+
+        // Return the side where we found p or q
+        return left != null ? left : right;
     }
 }
